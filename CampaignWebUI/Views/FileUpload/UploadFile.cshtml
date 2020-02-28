@@ -1,0 +1,57 @@
+﻿<div class="col-sm-3" style="float:left;">
+    <label class="btn btn-outline-dark btn-block">
+        Browse...
+        <span id="uploaded-file-name" style="font-style: italic"></span>
+        <input id="file-upload" type="file" name="file"
+               onchange="$('#uploaded-file-name').text($('#file-upload')[0].value);" hidden>
+    </label>
+</div>
+<div class="col-sm-2" style="float:left">
+    <button class="btn btn-dark" id="start_upload">Upload</button>
+</div>
+
+<div class="col-sm-7" style="overflow-y:scroll; float:left;display:block;max-height:500px" id="resultdiv">
+</div>
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+
+@section Scripts {
+    <script>
+       
+        $("#start_upload").click(function (evt) {
+            var fileUpload = $("#file-upload").get(0);
+            var files = fileUpload.files;
+            var data = new FormData();
+            data.append('type', 'your_type');
+            data.append('id', '1');
+
+            for (var i = 0; i < files.length; i++) {
+                data.append(files[i].name, files[i]);
+            }
+            $.ajax({
+                type: "POST",
+                url: "/FileUpload/UploadFile",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (message) {
+                    $("#resultdiv").html("");
+                    for(var i =0;i < message.length;i++)
+                        {
+                        var item = message[i];
+                        $("#resultdiv").append("<p class=text-success>" + item + "</p>");
+                        }
+
+                    
+                },
+                error: function () {
+                    alert("There is a problem with the file!");
+                }
+            });
+        });
+
+    </script>
+
+}
